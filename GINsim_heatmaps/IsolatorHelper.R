@@ -1,13 +1,7 @@
 #### All functions to make the analysis <3 ####
 
 
-## Get the required packages
-ipkgs <- function(pkg){
-  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
-  if (length(new.pkg)) 
-    install.packages(new.pkg, dependencies = TRUE)
-  sapply(pkg, require, character.only = TRUE)
-}
+
 
 #Read content
 #Fonction pour lire un fichier CSV selon le chemin
@@ -50,7 +44,7 @@ Formatter <- function(list2DF,noms)
     colnames(x) <- noms
     return(x)
   })
-  
+
   b <- lapply(a, function(x) {
     x[order(x[,1]),]  })
   return(b)
@@ -73,7 +67,7 @@ checkInterval <- function(number, interval)
   if (grepl("~", number) || grepl("SS",number) || grepl("X",number) || grepl("-",number)){
     return(FALSE)
   }
-  else 
+  else
   {
     numb <- as.numeric(number)
     return(numb > interval[1] && numb < interval[2])
@@ -103,9 +97,9 @@ splitWithOverlap <- function(vec, seg.length, overlap) {
     starts = seq(1, length(vec), by=seg.length-overlap)
     ends   = starts + seg.length - 1
     ends[ends > length(vec)] = length(vec)
-    
+
     a <- lapply(1:length(starts), function(i) vec[starts[i]:ends[i]])
-    return(a[1:length(a)-1])  
+    return(a[1:length(a)-1])
   }
   else #Faudra que je prenne le cas où c'est moins de 2... mais normalement impossible vu que c'est censé être booléen à minima...
   {
@@ -126,7 +120,7 @@ isCA <- function(state, valor)
   if (any(booltable))
   {
     return("~")
-  } 
+  }
   else
   {
     return("SS")
@@ -146,7 +140,7 @@ isOsc <- function(state, valor, output)
   {
     #print(nodevalue)
     return("~")
-  } 
+  }
   else
   {
     return("-")
@@ -155,7 +149,7 @@ isOsc <- function(state, valor, output)
 
 
 #returns the table with a column representing the attractors. Valor = valeurs multivalué
-CaSSetter <- function(table, value) 
+CaSSetter <- function(table, value)
 {
   Attractor_type <- apply(table,1, isCA, valor = value)
   #print(Attractor_type)
@@ -177,20 +171,20 @@ comp_suf <- function(state, valuesFur)
   #print(state["Attracteur"])
   Suf <- as.numeric(state[["Suf"]])
   #print(Suf)
-  
+
   if (IsFurElevated(state["Fur"], valuesFur) && Suf == 1.0 && state["Attracteur"] == "~")
   {
     return("~")
   }
-  else 
+  else
   {
     if (state["Attracteur"] == "SS")
     {
       return("-")
-    }        
-    else 
+    }
+    else
     {
-      
+
       if (comparator(Suf, valeurs))
       {
         return("~")
@@ -208,7 +202,7 @@ comp_suf <- function(state, valuesFur)
 
 
 
-IsFurElevated <- function(number, valuesFur) 
+IsFurElevated <- function(number, valuesFur)
 {
   #print(valuesFur)
   #print(valuesFur[2])
@@ -224,7 +218,7 @@ IsFurElevated <- function(number, valuesFur)
 
 SufSetter <- function(table,valeurs2Fur)
 {
-  TheSuf <- apply(table,1,comp_suf, valuesFur= valeurs2Fur) 
+  TheSuf <- apply(table,1,comp_suf, valuesFur= valeurs2Fur)
   #print(TheSuf)
   table$"Suf_behavior" <- TheSuf
   return(table)
@@ -237,7 +231,7 @@ OscillationDetector <- function(table, output) #value = boolean or multivalued
   o <- paste(output,"behavior")
   #value <- Gateway(output)
   #print(value)
-  Attractor_type <- apply(table,1, isOsc, valor = VALUESSUF, output= output) #Value Hardcoded 
+  Attractor_type <- apply(table,1, isOsc, valor = VALUESSUF, output= output) #Value Hardcoded
   #print(Attractor_type)
   #print(table)
   table$o <- Attractor_type
@@ -259,7 +253,7 @@ Gateway <- function(x)
   {
     return(VALUESSUF)
   }
-  else 
+  else
   {
     print("lol")
   }
@@ -274,11 +268,11 @@ OutputBehaviors <- function(tableau, listoutputs)
   Tablex <- cbind(tableau,Table)
   #print(Tablex)
   return(Tablex)
-  
+
 }
 
 #3 étapes: 1) Définir si c'est un attracteur cyclique ou un état stable 2) Définir le cpt de Suf 3) Définir le cpt des autres outputs
-L_abeller <- function(Tableau, OutputList, ValuesVector)                                                        
+L_abeller <- function(Tableau, OutputList, ValuesVector)
 {
   a <- OutputBehaviors(Tableau, OutputList)
   #print("OK Output")
@@ -289,7 +283,7 @@ L_abeller <- function(Tableau, OutputList, ValuesVector)
   return(c)
 }
 
-checkInterval2 <- function(number, interval) #comparaison entre 2 valeurs, 
+checkInterval2 <- function(number, interval) #comparaison entre 2 valeurs,
 {
     numb <- as.numeric(number)
     return(numb > interval[1] && numb < interval[2])
@@ -391,13 +385,13 @@ discretisation_multi <- function(x, valeursmulti) #Valeursmulti = {0,1,2}, hardc
   {
     return("High")
   }
-  
+
 }
 
-discretisation_bool <- function(x) 
+discretisation_bool <- function(x)
 {
   n <- as.numeric(x)
-  if (n == 0) 
+  if (n == 0)
   {
     return("OFF")
   }
@@ -424,15 +418,15 @@ DarkIsolator <- function(df,i,o)
 
 plotter <- function(Table)
 {
-  
+
   y <- colnames(Table)[3]
   e <- grep(y,THEOUTPUTS)
-  switch(e, 
+  switch(e,
          {
            couleur <- COLORSCALES[[1]]
            behave <- grep("behavior", colnames(Table))
            type <- grep("type", colnames(Table))
-           Arupha <- ggplot(data = Table, aes(x = O2, y = Fe_ext)) + theme_minimal() + geom_tile(aes(fill = Table[,dim(Table)[2]])) +  geom_text(aes(label = Table[,behave]), size = 10)+ scale_y_reverse() + scale_x_discrete(position = "top") 
+           Arupha <- ggplot(data = Table, aes(x = O2, y = Fe_ext)) + theme_minimal() + geom_tile(aes(fill = Table[,dim(Table)[2]])) +  geom_text(aes(label = Table[,behave]), size = 10)+ scale_y_reverse() + scale_x_discrete(position = "top")
            Arupha <- Arupha + scale_fill_manual("",values = c("Low"=couleur[[1]],"Medium"=couleur[[2]], "High"=couleur[[3]] )) + theme(plot.caption= element_text(hjust = 0.5, size = 20)) + labs(caption =y)
          },
          {
@@ -440,7 +434,7 @@ plotter <- function(Table)
            #print(couleur[[1]])
            behave <- grep("behavior", colnames(Table))
            type <- grep("type", colnames(Table))
-           Arupha <- ggplot(data = Table, aes(x = O2, y = Fe_ext)) + theme_minimal() + geom_tile(aes(fill = Table[,type])) +  geom_text(aes(label = Table[,behave]), size = 10)+ scale_y_reverse() + scale_x_discrete(position = "top") 
+           Arupha <- ggplot(data = Table, aes(x = O2, y = Fe_ext)) + theme_minimal() + geom_tile(aes(fill = Table[,type])) +  geom_text(aes(label = Table[,behave]), size = 10)+ scale_y_reverse() + scale_x_discrete(position = "top")
            Arupha <- Arupha + scale_fill_manual("",values = c("OFF"=couleur[[1]],"ON"=couleur[[2]]))  + theme(plot.caption= element_text(hjust = 0.5, size = 20)) + labs(caption =y)
            return(Arupha)
          },
@@ -450,21 +444,21 @@ plotter <- function(Table)
            #print(couleur)
            behave <- grep("behavior", colnames(Table))
            type <- grep("type", colnames(Table))
-           Arupha <- ggplot(data = Table, aes(x = O2, y = Fe_ext)) + theme_minimal() + geom_tile(aes(fill = Table[,type])) +  geom_text(aes(label = Table[,behave]), size = 10)+ scale_y_reverse() + scale_x_discrete(position = "top") 
+           Arupha <- ggplot(data = Table, aes(x = O2, y = Fe_ext)) + theme_minimal() + geom_tile(aes(fill = Table[,type])) +  geom_text(aes(label = Table[,behave]), size = 10)+ scale_y_reverse() + scale_x_discrete(position = "top")
            Arupha <- Arupha + scale_fill_manual("",values = c("OFF"=couleur[[1]],"ON"=couleur[[2]]))  + theme(plot.caption= element_text(hjust = 0.5, size = 20)) + labs(caption =y)
          },
          {
            couleur <- COLORSCALES[[4]]
            behave <- grep("behavior", colnames(Table))
            type <- grep("type", colnames(Table))
-           Arupha <- ggplot(data = Table, aes(x = O2, y = Fe_ext)) + theme_minimal() + geom_tile(aes(fill = Table[,dim(Table)[2]]))  +  geom_text(aes(label = Table[,behave]), size = 10)+ scale_y_reverse()  + scale_x_discrete(position = "top") 
+           Arupha <- ggplot(data = Table, aes(x = O2, y = Fe_ext)) + theme_minimal() + geom_tile(aes(fill = Table[,dim(Table)[2]]))  +  geom_text(aes(label = Table[,behave]), size = 10)+ scale_y_reverse()  + scale_x_discrete(position = "top")
            Arupha <- Arupha + scale_fill_manual("",values = c("Low"=couleur[[1]],"Medium"=couleur[[2]], "High"=couleur[[3]] )) + theme(plot.caption= element_text(hjust = 0.5, size = 20)) + labs(caption =y)
          },
          {
            couleur <- COLORSCALES[[5]]
            behave <- grep("behavior", colnames(Table))
            type <- grep("type", colnames(Table))
-           Arupha <- ggplot(data = Table, aes(x = O2, y = Fe_ext)) + theme_minimal() + geom_tile(aes(fill = Table[,type])) + geom_text(aes(label = Table[,behave]), size = 10)+ scale_y_reverse() + scale_x_discrete(position = "top") 
+           Arupha <- ggplot(data = Table, aes(x = O2, y = Fe_ext)) + theme_minimal() + geom_tile(aes(fill = Table[,type])) + geom_text(aes(label = Table[,behave]), size = 10)+ scale_y_reverse() + scale_x_discrete(position = "top")
            Arupha <- Arupha + scale_fill_manual("",values = c("OFF"=couleur[[1]],"ON"=couleur[[2]]))+ theme(plot.caption= element_text(hjust = 0.5, size = 20)) + labs(caption =y)
          }
   )
@@ -474,7 +468,7 @@ plotter <- function(Table)
 #1 color, plusieurs teintes
 Darkplotter <- function(Table)
 {
-  
+
   y <- colnames(Table)[3]
   print(y)
   #e <- grep(y,IS.OUTPUTS)
@@ -485,17 +479,17 @@ Darkplotter <- function(Table)
            #print(couleur)
            behave <- grep("behavior", colnames(Table))
            #type <- grep("type", colnames(Table))
-           Arupha <- ggplot(data = Table, aes(x = O2, y = Fe_ext)) + theme_minimal() + geom_tile(color="black",size=2,aes(fill = Table[,3])) +  geom_text(aes(label = Table[,behave]), size = 10)+ scale_y_reverse() + scale_x_discrete(position = "top") 
+           Arupha <- ggplot(data = Table, aes(x = O2, y = Fe_ext)) + theme_minimal() + geom_tile(color="black",size=2,aes(fill = Table[,3])) +  geom_text(aes(label = Table[,behave]), size = 10)+ scale_y_reverse() + scale_x_discrete(position = "top")
            Arupha <- Arupha + scale_fill_continuous("value",low = COLORSCALE_BOOL[[1]],high= COLORSCALE_BOOL[[2]], limits = c(0,1), breaks = c(0,0.5,1)) + theme(plot.caption= element_text(hjust = 0.5, size = 20)) + labs(caption =y)
-           
-         } 
+
+         }
   else
          {
            couleur <- DARK_COLORSCALES[[2]]
            #print(couleur[[1]])
            behave <- grep("behavior", colnames(Table))
 #cheatcode : 3e colonne = la bonne
-           Arupha <- ggplot(data = Table, aes(x = O2, y = Fe_ext)) + theme_minimal() + geom_tile(color="black",size=2,aes(fill = Table[,3]))+ scale_colour_gradient2() +  geom_text(aes(label = Table[,behave]), size = 10)+ scale_y_reverse() + scale_x_discrete(position = "top") 
+           Arupha <- ggplot(data = Table, aes(x = O2, y = Fe_ext)) + theme_minimal() + geom_tile(color="black",size=2,aes(fill = Table[,3]))+ scale_colour_gradient2() +  geom_text(aes(label = Table[,behave]), size = 10)+ scale_y_reverse() + scale_x_discrete(position = "top")
            Arupha <- Arupha + scale_fill_continuous("value",low = COLORSCALE_MULTI[[1]],high= COLORSCALE_MULTI[[3]], limits = c(0,2))+ theme(plot.caption= element_text(hjust = 0.5, size = 20)) + labs(caption =y)
            return(Arupha)
          }
@@ -504,7 +498,7 @@ Darkplotter <- function(Table)
 
 
 
-j#A partir des résultats de simulation pour une situation, genère des plots pour les outputs étudiés ("THEOUTPUTS")
+#A partir des résultats de simulation pour une situation, genère des plots pour les outputs étudiés ("THEOUTPUTS")
 IsolatorPlotter <- function(SimulationResultsTable, inp, o,t, v) #i = INPUTS, o = OUTPUTS, t = THEOUTPUTS, v = Multivalued values
 {
   #On indique les caractéristiques d'oscillation & des attracteurs pour nos outputs préférés

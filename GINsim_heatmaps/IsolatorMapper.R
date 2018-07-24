@@ -1,16 +1,31 @@
 #Load the functions needed...
+# set working directory here
 
-base <- "~/Bureau/Prototype data analysis/Tools/Server results/"
-setwd(base)
+
+#base <- "~/Bureau/Prototype data analysis/Tools/Scripts/GINsim_heatmaps/"
+#setwd(base)
+
+## Get the required packages
+ipkgs <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg))
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE)
+}
+
+#Load existing packages, install missing packages.
+required.packages <- c('here','data.table','ggplot2','tidyr','reshape','parallel','Matrix', 'gridExtra','reshape2','RColorBrewer','ggpubr','cowplot','grid')
+ipkgs(required.packages)
+
+setwd(here())
+setwd("./GINsim_heatmaps")
+print(getwd())
+
 
 source("IsolatorHelper.R")
 
-#Load existing packages, install missing packages.
-required.packages <- c('data.table','ggplot2','tidyr','reshape','parallel','Matrix', 'gridExtra','reshape2','RColorBrewer','ggpubr','cowplot','grid')
-ipkgs(required.packages)
-
-
 #GLOBAL VARIABLES
+
 
 NAMES <- c("Fe_ext","O2","Fe_free","Fur","RyhB","ROS","OxyR","Hpx","Suf","IscR-A","IscR-H","IscSUA","ErpA","NfuA")
 BOOLEAN <- c("ROS","OxyR","Hpx","IscR-A","IscR-H","IscSUA","ErpA","NfuA")
@@ -53,10 +68,10 @@ Folderz <- list.dirs()
 Folders <- Folderz[2:length(Folderz)]
 
 #Recuperer les mutants
-Mu <- getmutants("./Report_01/")
-Hardtest <- Mu[[8]]
+#Mu <- getmutants("./Report_01/")
+#Hardtest <- Mu[[8]]
 
-
+#Get all Mutants names
 allmutNames <- getAllMutants(Folders)
 
 
@@ -68,17 +83,18 @@ ALLMUT <- lapply(Folders, reader)
 ALLMUT <- G_Formatter(ALLMUT,NAMES)
 
 
-ok <- ALLMUT[[1]]
-okk <- ok[[1]]
+#ok <- ALLMUT[[1]]
+#okk <- ok[[1]]
 
-oke <- ok[[8]]
-e <- allmutNames[[1]]
+#oke <- ok[[8]]
+#e <- allmutNames[[1]]
 
 #On sépare la liste de mutants en 3 (simple, 2x, 3x)
 TEST00 <- ALLMUT[[1]]
 TEST10 <- ALLMUT[[2]]
 Test20 <- ALLMUT[[3]]
 
+TESTS <- lapply(ALLMUT, function(x){return(x)})
 
 #Nom des mutants de chaque 1x,2x,3x
 Helmut <- allmutNames[[1]]
