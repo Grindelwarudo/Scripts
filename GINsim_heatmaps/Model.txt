@@ -1,0 +1,14 @@
+Fe_ext
+O2
+Fe_free
+Fur
+RyhB
+ROS
+OxyR
+Hpx
+Suf
+IscR-A
+IscR-H
+IscSUA
+ErpA
+NfuA

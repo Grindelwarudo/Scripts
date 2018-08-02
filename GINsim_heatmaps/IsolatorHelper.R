@@ -5,11 +5,23 @@
 
 #Read content
 #Fonction pour lire un fichier CSV selon le chemin
-reader <- function(chem1)
+reader <- function(chem1) #chem1 = Dossier contenant un mutant donné
+{
+  #print(chem1)
+  tp <- list.files(chem1)
+  chemtp <- paste(chem1,"/",tp,sep = "")
+  return(lapply(chemtp, read.table, sep = "," ,stringsAsFactors = FALSE, header = F))
+}
+
+#Lit les csv associés aux mutants IS, Specifique aux mutants IS
+reader2 <- function(chem1, MutIS)
 {
   print(chem1)
   tp <- list.files(chem1)
-  chemtp <- paste(chem1,"/",tp,sep = "")
+  tp2 <- get.IS.filenames(tp,MutIS)
+  #print(tp2)
+  chemtp <- paste(chem1,"/",tp2,sep = "")
+  #print(chemtp)
   return(lapply(chemtp, read.table, sep = "," ,stringsAsFactors = FALSE, header = F))
 }
 
@@ -231,7 +243,7 @@ OscillationDetector <- function(table, output) #value = boolean or multivalued
   o <- paste(output,"behavior")
   #value <- Gateway(output)
   #print(value)
-  Attractor_type <- apply(table,1, isOsc, valor = VALUESSUF, output= output) #Value Hardcoded
+  Attractor_type <- apply(table,1, isOsc, valor = VALUESMULTI, output= output) #Value Hardcoded
   #print(Attractor_type)
   #print(table)
   table$o <- Attractor_type
@@ -251,7 +263,7 @@ Gateway <- function(x)
   }
   else if (x %in% MULTIVALUED)
   {
-    return(VALUESSUF)
+    return(VALUESMULTI)
   }
   else
   {
@@ -317,7 +329,7 @@ discretisator <- function(Table,outputname)
   nomdetype <- paste(outputname,"type", sep = "_")
   if (outputname == "Suf")
   {
-    ox <- lapply(e, discretisation_multi, valeursmulti = VALUESSUF)
+    ox <- lapply(e, discretisation_multi, valeursmulti = VALUESMULTI)
     oy <- as.factor(suf_discretisation(e,j))
     Table$X <- oy
     i <- grep("X",colnames(Table), fixed = T)
@@ -326,7 +338,7 @@ discretisator <- function(Table,outputname)
   }
   else if (any(grepl(outputname, x = MULTIVALUED)))
   {
-    ox <- as.factor(unlist(lapply(e, discretisation_multi, valeursmulti = VALUESSUF)))
+    ox <- as.factor(unlist(lapply(e, discretisation_multi, valeursmulti = VALUESMULTI)))
     Table$X <- ox
     i <- grep("X",colnames(Table), fixed = T)
     colnames(Table)[i] <- nomdetype
@@ -348,15 +360,15 @@ suf_discretisation <-function(etat, typeOsc){
   {
     #print(x)
     #print(discretisation_multi(x,z))
-    if (discretisation_multi(x, VALUESSUF) == "Low")
+    if (discretisation_multi(x, VALUESMULTI) == "Low")
     {
       return("Low")
     }
-    else if (discretisation_multi(x,VALUESSUF) == "Medium" && y == "X")
+    else if (discretisation_multi(x,VALUESMULTI) == "Medium" && y == "X")
     {
       return("High")
     }
-    else if (discretisation_multi(x,VALUESSUF) == "Medium" && y != "X")
+    else if (discretisation_multi(x,VALUESMULTI) == "Medium" && y != "X")
     {
       return("Medium")
     }
@@ -470,9 +482,9 @@ Darkplotter <- function(Table)
 {
 
   y <- colnames(Table)[3]
-  print(y)
+  #print(y)
   #e <- grep(y,IS.OUTPUTS)
-  print(grepl(y,BOOLEAN))
+  #print(grepl(y,BOOLEAN))
   if (any(grepl(y,BOOLEAN)))
          {
            couleur <- DARK_COLORSCALES[[1]]
@@ -524,13 +536,23 @@ DarkIsolatorPlotter <- function(SimulationResultsTable, inp, o,t, v) #i = INPUTS
 
 ###### PRINT BIG SCALE PART #######
 
-ThePlotPrinter <- function(Megalist2plots,list2mutants,plotname, o)
+ThePlotPrinter <- function(Megalist2plots,list2mutants,plotname)
 {
-  n_cols = length(o)
-  pdf(plotname, width = (4.5 * n_cols), height = (1.5 * (n_cols/2)))
-  mapply(FUN = PlotPrinter, list2plots = Megalist2plots, mutant = list2mutants, n_col = n_cols)
-  #print(length(z))
-  dev.off()
+  # Evaluates the number of outputs in the plotlists
+  n_cols = length(Megalist2plots[[1]])
+  if (n_cols <= 2)
+  {
+    pdf(plotname, width = (4.5 * n_cols), height = (1.5 * (n_cols)))
+    mapply(FUN = PlotPrinter, list2plots = Megalist2plots, mutant = list2mutants, n_col = n_cols)
+    dev.off()  
+  } else
+  {
+    pdf(plotname, width = (4.5 * n_cols), height = (1.5 * (n_cols/2)))
+    mapply(FUN = PlotPrinter, list2plots = Megalist2plots, mutant = list2mutants, n_col = n_cols)
+    
+    dev.off() 
+  }
+  
 }
 
 PlotPrinter <- function(list2plots,mutant, n_col)
@@ -569,17 +591,16 @@ get.IS.filenames <- function(listOfFiles, MutIS)
   return(x)
 }
 
-#Lit les csv associés aux mutants IS
-#Specifique aux mutants IS
-reader2 <- function(chem1, MutIS)
+MegaIsolatorPlotter <- function(allSimulations,folders)
 {
-  print(chem1)
-  tp <- list.files(chem1)
-  tp2 <- get.IS.filenames(tp,MutIS)
-  #print(tp2)
-  chemtp <- paste(chem1,"/",tp2,sep = "")
-  #print(chemtp)
-  return(lapply(chemtp, read.table, sep = "," ,stringsAsFactors = FALSE, header = F))
+  Omega <- mapply(UltimateIsolatorPlotter, list2simulations = allSimulations, Folder = folders)
+  return(Omega)
 }
 
-
+UltimateIsolatorPlotter <- function(list2simulations, Folder)
+{
+  AllPlots4mutants <- lapply(list2simulations, IsolatorPlotter, inp = INPUTS, o = OUTPUTS, t = THEOUTPUTS, v = VALUESMULTI)
+  allmutNames <- getmutants(Folder)
+  names(AllPlots4mutants) <- mutnames
+  return(AllPlots4mutants)
+}

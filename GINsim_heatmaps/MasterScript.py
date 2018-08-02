@@ -59,15 +59,24 @@ def detectGINsimVersion():
 
 def detectAllPerturbations():
     all_perturbations = []
+    try:
+        subprocess.check_output("python3.5 ExhaustMut.py", shell=True, stderr = subprocess.STDOUT)
+    except subprocess.CalledProcessError as e:
+            print ("error>",e.output,'<')
+            print ("Whoops... Looks like the perturbation files have not been generated!")
     for e in os.listdir(cwd):
         if "Liste_mutants_" in e:
             all_perturbations += [e]
-    return(sorted(all_perturbations))
+    if len(all_perturbations) == 0:
+        print("No perturbation file has been found...")
+    else:
+        return(sorted(all_perturbations))
 
 
 def perturbationsSimulator():
     model = detectModel()
     GINsim = detectGINsimVersion()
+    
     all_perturbations = detectAllPerturbations()
     script = 'Attractors_tables.py'
     for e in all_perturbations:
@@ -79,7 +88,7 @@ def perturbationsSimulator():
             subprocess.check_output(cmd, shell=True, stderr = subprocess.STDOUT)
         except subprocess.CalledProcessError as e: 
             print ("error>",e.output,'<') 
-    return("All simulations are done.")
+    print("All simulations are done.")
 
 
 
