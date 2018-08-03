@@ -1,0 +1,120 @@
+Node Fe_ext_b1 {
+  logic = (Fe_ext_b1);
+  rate_up = @logic ? $u_Fe_ext_b1 : 0;
+  rate_down = @logic ? 0 : $d_Fe_ext_b1;
+}
+
+Node Fe_ext_b2 {
+  logic = (Fe_ext_b1 & Fe_ext_b2);
+  rate_up = @logic ? $u_Fe_ext_b2 : 0;
+  rate_down = @logic ? 0 : $d_Fe_ext_b2;
+}
+
+Node O2_b1 {
+  logic = (O2_b1);
+  rate_up = @logic ? $u_O2_b1 : 0;
+  rate_down = @logic ? 0 : $d_O2_b1;
+}
+
+Node O2_b2 {
+  logic = (O2_b1 & O2_b2);
+  rate_up = @logic ? $u_O2_b2 : 0;
+  rate_down = @logic ? 0 : $d_O2_b2;
+}
+
+Node Fe_free_b1 {
+  logic = (!Fe_ext_b1 & !Fe_free_b1 & !RyhB_b1 & ROS) | (!Fe_ext_b1 & !Fe_free_b1 & RyhB_b1 & !RyhB_b2 & ROS) | (!Fe_ext_b1 & !Fe_free_b1 & RyhB_b1 & RyhB_b2) | (!Fe_ext_b1 & Fe_free_b1 & !Fe_free_b2 & !RyhB_b1 & ROS) | (!Fe_ext_b1 & Fe_free_b1 & !Fe_free_b2 & RyhB_b1 & !RyhB_b2 & ROS) | (!Fe_ext_b1 & Fe_free_b1 & !Fe_free_b2 & RyhB_b1 & RyhB_b2) | (!Fe_ext_b1 & Fe_free_b1 & Fe_free_b2) | (Fe_ext_b1);
+  rate_up = @logic ? $u_Fe_free_b1 : 0;
+  rate_down = @logic ? 0 : $d_Fe_free_b1;
+}
+
+Node Fe_free_b2 {
+  logic = (Fe_ext_b1 & !Fe_ext_b2 & !O2_b1 & Fe_free_b1 & !Fur_b1 & !RyhB_b1 & !OxyR) | (Fe_ext_b1 & !Fe_ext_b2 & !O2_b1 & Fe_free_b1 & !Fur_b1 & RyhB_b1 & !RyhB_b2 & !OxyR) | (Fe_ext_b1 & !Fe_ext_b2 & !O2_b1 & Fe_free_b1 & !Fur_b1 & RyhB_b1 & RyhB_b2) | (Fe_ext_b1 & !Fe_ext_b2 & !O2_b1 & Fe_free_b1 & Fur_b1 & !Fur_b2 & !RyhB_b1 & !OxyR) | (Fe_ext_b1 & !Fe_ext_b2 & !O2_b1 & Fe_free_b1 & Fur_b1 & !Fur_b2 & RyhB_b1 & !RyhB_b2 & !OxyR) | (Fe_ext_b1 & !Fe_ext_b2 & !O2_b1 & Fe_free_b1 & Fur_b1 & !Fur_b2 & RyhB_b1 & RyhB_b2) | (Fe_ext_b1 & !Fe_ext_b2 & !O2_b1 & Fe_free_b1 & Fur_b1 & Fur_b2 & RyhB_b1 & RyhB_b2) | (Fe_ext_b1 & !Fe_ext_b2 & O2_b1 & Fe_free_b1 & !Fur_b1 & !RyhB_b1 & ROS & !OxyR) | (Fe_ext_b1 & !Fe_ext_b2 & O2_b1 & Fe_free_b1 & !Fur_b1 & RyhB_b1 & !RyhB_b2 & ROS & !OxyR) | (Fe_ext_b1 & !Fe_ext_b2 & O2_b1 & Fe_free_b1 & !Fur_b1 & RyhB_b1 & RyhB_b2) | (Fe_ext_b1 & !Fe_ext_b2 & O2_b1 & Fe_free_b1 & Fur_b1 & !Fur_b2 & !RyhB_b1 & ROS & !OxyR) | (Fe_ext_b1 & !Fe_ext_b2 & O2_b1 & Fe_free_b1 & Fur_b1 & !Fur_b2 & RyhB_b1 & !RyhB_b2 & ROS & !OxyR) | (Fe_ext_b1 & !Fe_ext_b2 & O2_b1 & Fe_free_b1 & Fur_b1 & !Fur_b2 & RyhB_b1 & RyhB_b2) | (Fe_ext_b1 & !Fe_ext_b2 & O2_b1 & Fe_free_b1 & Fur_b1 & Fur_b2 & RyhB_b1 & RyhB_b2) | (Fe_ext_b1 & Fe_ext_b2 & Fe_free_b1 & !Fur_b1 & !RyhB_b1 & !OxyR) | (Fe_ext_b1 & Fe_ext_b2 & Fe_free_b1 & !Fur_b1 & RyhB_b1 & !RyhB_b2 & !OxyR) | (Fe_ext_b1 & Fe_ext_b2 & Fe_free_b1 & !Fur_b1 & RyhB_b1 & RyhB_b2) | (Fe_ext_b1 & Fe_ext_b2 & Fe_free_b1 & Fur_b1 & !Fur_b2 & !RyhB_b1 & !OxyR) | (Fe_ext_b1 & Fe_ext_b2 & Fe_free_b1 & Fur_b1 & !Fur_b2 & RyhB_b1 & !RyhB_b2 & !OxyR) | (Fe_ext_b1 & Fe_ext_b2 & Fe_free_b1 & Fur_b1 & !Fur_b2 & RyhB_b1 & RyhB_b2) | (Fe_ext_b1 & Fe_ext_b2 & Fe_free_b1 & Fur_b1 & Fur_b2 & RyhB_b1 & RyhB_b2);
+  rate_up = @logic ? $u_Fe_free_b2 : 0;
+  rate_down = @logic ? 0 : $d_Fe_free_b2;
+}
+
+Node Fur_b1 {
+  logic = (!Fe_free_b1 & Fur_b1 & Fur_b2) | (Fe_free_b1);
+  rate_up = @logic ? $u_Fur_b1 : 0;
+  rate_down = @logic ? 0 : $d_Fur_b1;
+}
+
+Node Fur_b2 {
+  logic = (Fe_free_b1 & Fe_free_b2 & Fur_b1 & !ROS) | (Fe_free_b1 & Fe_free_b2 & Fur_b1 & ROS & OxyR);
+  rate_up = @logic ? $u_Fur_b2 : 0;
+  rate_down = @logic ? 0 : $d_Fur_b2;
+}
+
+Node RyhB_b1 {
+  logic = (!Fur_b1) | (Fur_b1 & !Fur_b2) | (Fur_b1 & Fur_b2 & RyhB_b1 & RyhB_b2);
+  rate_up = @logic ? $u_RyhB_b1 : 0;
+  rate_down = @logic ? 0 : $d_RyhB_b1;
+}
+
+Node RyhB_b2 {
+  logic = (!Fur_b1 & RyhB_b1);
+  rate_up = @logic ? $u_RyhB_b2 : 0;
+  rate_down = @logic ? 0 : $d_RyhB_b2;
+}
+
+Node ROS {
+  logic = (O2_b1 & O2_b2 & !Hpx);
+  rate_up = @logic ? $u_ROS : 0;
+  rate_down = @logic ? 0 : $d_ROS;
+}
+
+Node OxyR {
+  logic = (ROS);
+  rate_up = @logic ? $u_OxyR : 0;
+  rate_down = @logic ? 0 : $d_OxyR;
+}
+
+Node Hpx {
+  logic = (OxyR);
+  rate_up = @logic ? $u_Hpx : 0;
+  rate_down = @logic ? 0 : $d_Hpx;
+}
+
+Node Suf_b1 {
+  logic = (!Fur_b1 & !OxyR & !Suf_b1 & IscR_A) | (!Fur_b1 & !OxyR & Suf_b1 & !Suf_b2 & IscR_A) | (!Fur_b1 & !OxyR & Suf_b1 & Suf_b2) | (!Fur_b1 & OxyR) | (Fur_b1 & !Fur_b2 & !OxyR & !Suf_b1 & IscR_A) | (Fur_b1 & !Fur_b2 & !OxyR & Suf_b1 & !Suf_b2 & IscR_A) | (Fur_b1 & !Fur_b2 & !OxyR & Suf_b1 & Suf_b2) | (Fur_b1 & !Fur_b2 & OxyR) | (Fur_b1 & Fur_b2 & Suf_b1 & Suf_b2);
+  rate_up = @logic ? $u_Suf_b1 : 0;
+  rate_down = @logic ? 0 : $d_Suf_b1;
+}
+
+Node Suf_b2 {
+  logic = (!Fur_b1 & OxyR & Suf_b1 & IscR_A) | (Fur_b1 & !Fur_b2 & OxyR & Suf_b1 & IscR_A);
+  rate_up = @logic ? $u_Suf_b2 : 0;
+  rate_down = @logic ? 0 : $d_Suf_b2;
+}
+
+Node IscR_A {
+  logic = (!IscR_H);
+  rate_up = @logic ? $u_IscR_A : 0;
+  rate_down = @logic ? 0 : $d_IscR_A;
+}
+
+Node IscR_H {
+  logic = (!ROS & IscR_A & IscSUA);
+  rate_up = @logic ? $u_IscR_H : 0;
+  rate_down = @logic ? 0 : $d_IscR_H;
+}
+
+Node IscSUA {
+  logic = (Fe_free_b1 & Fe_free_b2 & !RyhB_b1 & !ROS & !IscR_H);
+  rate_up = @logic ? $u_IscSUA : 0;
+  rate_down = @logic ? 0 : $d_IscSUA;
+}
+
+Node ErpA {
+  logic = (!RyhB_b1 & !IscR_H) | (RyhB_b1 & !RyhB_b2 & !IscR_H);
+  rate_up = @logic ? $u_ErpA : 0;
+  rate_down = @logic ? 0 : $d_ErpA;
+}
+
+Node NfuA {
+  logic = (!IscR_H);
+  rate_up = @logic ? $u_NfuA : 0;
+  rate_down = @logic ? 0 : $d_NfuA;
+}
+

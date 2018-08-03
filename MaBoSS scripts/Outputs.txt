@@ -1,0 +1,14 @@
+Fe_free_b1
+Fe_free_b2
+Fur_b1
+Fur_b2
+RyhB_b1
+RyhB_b2
+ROS
+Suf_b1
+Suf_b2
+IscR_A
+IscR_H
+IscSUA
+ErpA
+NfuA
