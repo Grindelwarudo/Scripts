@@ -67,7 +67,7 @@ Software:
 
 * Python3.5
 * R 3.4.4
-* MaBoSS 2.0 and all its dependencies (please refer to [the MaBoSS installation page](https://maboss.curie.fr/)
+* MaBoSS 2.0 and all its dependencies (please refer to [the MaBoSS installation page](https://maboss.curie.fr/) )
 * MaBoSS environment
 
 For the hardware, please refer to the hardware requirements above.
