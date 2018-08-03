@@ -4,7 +4,7 @@
 
 This folder contians all the scripts used for analyzing a model with two inputs, with my GINsim model as an example.
 
-### Hardware requirements [hardware-req]:
+### Hardware requirements:
 
 * 8 Gb RAM
 * 4 cores CPU (I could launch my analysis on my laptop, which has the "Intel® Core™ i5-4200H CPU @ 2.80GHz × 4" )
