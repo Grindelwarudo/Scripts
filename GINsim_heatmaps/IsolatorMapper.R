@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-
+#For manual purpose in local...
 #base <- "~/Bureau/Prototype data analysis/Tools/Scripts/GINsim_heatmaps/"
 #setwd(base)
 
@@ -16,8 +16,7 @@ ipkgs <- function(pkg){
 required.packages <- c('here','data.table','ggplot2','tidyr','reshape','parallel','Matrix', 'gridExtra','reshape2','RColorBrewer','ggpubr','cowplot','grid','argparse','argparser')
 ipkgs(required.packages)
 
-setwd(here())
-setwd("./GINsim_heatmaps")
+here()
 print(getwd())
 
 
